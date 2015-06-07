@@ -798,6 +798,90 @@ int largestRectangleArea(vector<int> &height) {
 	return maxArea;
 }
 ```
+##LIS(longest increase Subsequence)
+
+```cpp
+int lis(const vector<int> &num){
+    auto len = num.size();
+    vector<int> dp(len,1);
+    int lis = 0;
+    /////
+    int lastIndex = 0;
+    /////
+    for(int i = 0; i < num.size(); i++){
+        for(int j = 0; j < i; j++){
+            if(num[j] < num[i] && dp[i] < dp[j] + 1){
+                dp[i] = dp[j] + 1;
+            }
+        }
+        if(dp[i] < lis){
+            ///////in order to print///////
+            lastIndex = i;
+            ///////////////
+            lis = dp[i];
+        }
+    }
+    printSubsequence(num,dp,lastIndex,lis);
+    return lis;
+}
+
+//////逆序输出///////
+void printSubsequence(const vector<int> &num,const vector<int> &dp,int lastIndex,int lis){
+    int temp = lis;
+    for(;lastIndex >=0 ; --lastIndex){
+        if(dp[lastIndex] == temp){
+            cout<<num[lastIndex]<<"->";
+            temp -- ;
+        }
+    }
+    cout<<endl;
+}
+```
+
+
+```cpp
+int binarysearch(const vector<int> &num, int key){
+	int  l = 0, r = num.size() - 1;
+	int  mid;
+	while (l <= r)
+	{
+		mid = (r - l) / 2 + l;
+		if (num[mid] > key){
+			r = mid - 1;
+		}
+		else if (num[mid] < key)
+		{
+			l = mid + 1;
+		}
+		else
+		{
+			return mid;
+		}
+	}
+	return l;
+}
+
+//
+int _Best_LIS(const vector<int> &num){
+	int len = 1;
+	vector<int> LIS;
+	LIS.push_back(num[0]);
+	int pos = 0;
+	for (int i = 1; i < num.size(); i++){
+		if (num[i] > LIS[len - 1]){
+			LIS.push_back(num[i]);
+			++len;
+		}
+		else
+		{
+			pos = binarysearch(LIS, num[i]);
+			LIS[pos] = num[i];
+		}
+	}
+	return len;
+}
+```
+
 ##最大子数组和以及乘积
 ```cpp
 //最大子数组乘积
