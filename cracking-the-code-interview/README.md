@@ -159,7 +159,7 @@ The value x is odd if n is a perfect square. Here's why: pair n's factors by the
 **Question: How many perfect squares are there?**
 There are `10` perfect squares. You could count them `(1,4,9,16,25,36,49,64,81,100)`, or you could simply realize that you can take the numbers 1 through 10 and square them: 1*1, 2*2, 3*3, ..., 10*10 Therefore, there are 10 lockers open at the end of this process.
 
-##Mathematics and Probability
+##7. Mathematics and Probability
 
 * 7.4 Write methods to implement the `multiply`, `subtract`, and `divide` operations for integers.Use `only` the add operator
 **subtration**
@@ -607,3 +607,183 @@ public List<Box> createStackDP(Box[] boxes,Box bottom,HashMap<Box,ArrayList<Box>
 }
 ```
 
+##11. Sorting and search 
+
+* 11.2 Write a method to sort an array of strings so that all the anagrams are next to each other.
+```cpp
+//类似与桶排序
+vector<string> sortStringWithAnagrams( vector<string> &S){
+	map<string, vector<string>> bucket;
+	for (string s : S){
+		string temp = s;
+		sort(temp.begin(), temp.end());
+		if (bucket.find(temp) != bucket.end()){
+			bucket[temp].push_back(s);
+		}
+		else{
+			bucket[temp] = { s };
+		}
+	}
+	vector<string> ret;
+	for (auto it = bucket.begin(); it != bucket.end();it++){
+		for (string temp :(it->second)){
+			ret.push_back(temp);
+		}
+	}
+	return ret;
+}
+```
+* 11.3 Search in the rotated sorted array
+```cpp
+//Search in Rotated Sorted Array
+//No duplicate exists in the array
+int search(vector<int> &nums,int target){
+    int l = 0;
+    int r = nums.size() - 1;
+    while(l <= r){
+        int mid = (r - l)/2 + l;
+        if(nums[mid] == target){
+            return mid;
+        }
+        if(nums[mid] >= nums[l]){
+            if(nums[l] <= target && target < nums[mid]){
+                r = mid- 1;
+            }else{
+                l = mid + 1
+            }
+        }else{
+            if(nums[mid] < target && target <= nums[r]){
+                l = mid + 1;
+            }else{
+                r = mid - 1;
+            }
+        }
+        return -1;
+    }
+}
+
+
+//with the duplicate element in the array
+bool search(vector<int> &nums,int target){
+    int l = 0;
+    int r = nums.size() - 1;
+    while(l <= r){
+        int mid = (r - l) / 2 + l;
+        if(nums[mid] ==  target){
+            return true;
+        }
+        if(nums[mid] > nums[l]){
+            if(nums[l] <= target && target < nums[mid]){
+                r = mid - 1;
+            }else{
+                l = mid + 1;
+            }
+        }else{
+            if(nums[mid] < target && target <= nums[r]){
+                l = mid + 1;
+            }else{
+                r = mid -1;
+            }
+        }else{
+            l = l + 1;
+        }
+    }
+    return false;
+}
+
+//find the minimum num in the rotated sorted array
+
+int findMin(vector<int> &num){
+    if(num.size() == 0){
+        return 0;
+    }
+    int l = 0;
+    int r = num.size() - 1 ;
+    while(l < r){
+        int m = (r - l) / 2 + l;
+        if(num[l] < num[r]){
+            return num[l];
+        }
+        if(num[l] < nums[m]){
+            l = m + 1;
+        }else if(num[l] > num[m]){ 
+            r = m;
+        }
+        /******如果存在duplicate elements 加入这个条件*******/
+        else{
+            l++;
+        }
+        /*************/
+    }
+    return num[l];
+}
+
+```
+
+* 11.5 Given a sorted array of strings which is interspersed with empty strings, write a
+method to find the location of a given string.
+
+```cpp
+int searchR(vector<string> &S, string str){
+	if (S.size() == 0 || str == ""){
+		return -1;
+	}
+	int l = 0;
+	int  r = S.size() - 1;
+
+	while (l <= r)
+	{
+		int m = (r - l) / 2 + l;
+		if (S[m] == ""){
+			int left = m - 1;
+			int right = m + 1;
+			while (true){
+				if (left < l && right > r){
+					return -1;
+				}
+				else if (right <= r && S[right] != ""){
+					m = right;
+					break;
+				}
+				else if (left >= l && S[left] != ""){
+					m = left;
+					break;
+				}
+				left--;
+				right++;
+			}
+		}
+		if (S[m] == str){
+			return m;
+		}
+		else if (S[m] < str){
+			l = m + 1;
+		}
+		else{
+			r = m - 1;
+		}
+
+	}
+	return -1;
+}
+```
+
+* 11.6 Given an MX N matrix in which each row and each column is sorted in ascending
+order, write a method to find an element
+**`杨氏矩阵`**
+```cpp
+boolean findElement(vector<vector<int>> matrix ,int elem){
+    int row = 0;
+    int col = matrix[0].size() - 1;
+    while(row < matrix.size() && col >= 0){
+        if(matrix[row][col] == elem){
+            return true;
+        }else if(matrix[row][col] > elem){
+            col -- ;
+        }else{
+            row ++;
+        }
+    }
+    return false;
+}
+```
